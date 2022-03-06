@@ -24,16 +24,16 @@ class CategoryResource extends JsonResource
             // convert string to boolean keyword
             $active = filter_var($request->productsActive, FILTER_VALIDATE_BOOLEAN);
             if ($active){
-                $returned['products'] = ProductResource::collection($this->activeProducts);
                 $returned['products_count'] =$this->active_products_count;
+                $returned['products'] = ProductResource::collection($this->activeProducts);
             }
             else{
-                $returned['products'] = ProductResource::collection($this->inActiveProducts);
                 $returned['products_count'] =$this->in_active_products_count;
+                $returned['products'] = ProductResource::collection($this->inActiveProducts);
             }
         }else{
-            $returned['products'] = ProductResource::collection($this->products);
             $returned['products_count'] =$this->products_count;
+            $returned['products'] = ProductResource::collection($this->products);
         }
         return  $returned;
     }
