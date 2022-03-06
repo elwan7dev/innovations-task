@@ -2,23 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
-use App\Http\Resources\CategoryCollection;
-use App\Http\Resources\CategoryResource;
-use App\Models\Category;
-use App\services\CategoryService;
-use Illuminate\Database\Eloquent\Builder;
+use App\Http\Requests\StoreproductRequest;
+use App\Http\Requests\UpdateproductRequest;
+use App\Http\Resources\ProductResource;
+use App\Models\Product;
+use App\services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 
-class CategoryController extends Controller
+class ProductController extends Controller
 {
-    private CategoryService $service;
+    private ProductService $service;
 
-    public function __construct(CategoryService $service)
+    public function __construct(ProductService $service)
     {
         $this->service = $service;
     }
@@ -26,84 +22,90 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return AnonymousResourceCollection
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Request $request)
     {
-        $categories = $this->service->getCategoriesWithConditions($request);
-        return CategoryResource::collection($categories);
+        $products = $this->service->getProductsWithConditions($request);
+        return ProductResource::collection($products);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreCategoryRequest $request
+     * @param  \App\Http\Requests\StoreproductRequest  $request
      * @return JsonResponse
      */
-    public function store(StoreCategoryRequest $request)
+    public function store(StoreproductRequest $request)
     {
-        $category = Category::create([
+        $product = Product::create([
             'name' => $request->name,
+            'price' => $request->price,
             'active' => $request->active,
+            'description' => $request->active,
+            'category_id' => $request->category,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'item saved successfully...!',
-            'data' => new CategoryResource($category)
+            'data' => new ProductResource($product)
         ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param Category $category
+     * @param Product $product
      * @return JsonResponse
      */
-    public function show(Category $category)
+    public function show(Product $product)
     {
         return response()->json([
             'success' => true,
             'message' => 'item retrieved successfully...!',
-            'data' => new CategoryResource($category)
+            'data' => new ProductResource($product)
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateCategoryRequest $request
-     * @param Category $category
+     * @param  \App\Http\Requests\UpdateproductRequest  $request
+     * @param Product $product
      * @return JsonResponse
      */
-    public function update(UpdateCategoryRequest $request, Category $category)
+    public function update(UpdateproductRequest $request, Product $product)
     {
-        $isUpdated =$category->update([
+        $isUpdated =$product->update([
             'name' => $request->name,
+            'price' => $request->price,
             'active' => $request->active,
+            'description' => $request->active,
+            'category_id' => $request->category,
         ]);
 
         return response()->json([
             'success' => (bool)$isUpdated,
             'message' => $isUpdated ? 'item updated successfully...!' : 'something wrong..!',
-            'data' => new CategoryResource($category)
+            'data' => new ProductResource($product)
         ], $isUpdated ? 200 : 400);
-
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Category $category
+     * @param Product $product
      * @return JsonResponse
      */
-    public function destroy(Category $category)
+    public function destroy(Product $product)
     {
-        $deleted = $category->delete();
+        $deleted = $product->delete();
 
         return response()->json([
             'success' => (bool) $deleted,
             'message' => $deleted ? 'item deleted successfully...!' : 'something wrong..!',
         ], $deleted ? 200 : 404);
     }
+
 }
