@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserLoginEvent;
 use App\Http\Resources\UserResource;
 use App\Mail\UserWelcome;
 use Illuminate\Http\Request;
@@ -36,14 +37,7 @@ class AuthController extends Controller
             ['*'] : auth()->user()->getPermissionsViaRoles()->pluck('name')->toArray();
 
         // send welcome mail
-        try {
-            Mail::to(auth()->user())->send(new UserWelcome(auth()->user()));
-        }catch (TransportException $e){
-            return response()->json([
-                'message' => $e->getMessage(),
-                'solution' => 'change MAIL_HOST to localhost and open your APP_URL:8025 to display MailHog'
-            ], 500);
-        }
+        event(new UserLoginEvent(auth()->user()));
 
         return response()->json([
             'token' => auth()->user()->createToken('API Token', $abilities)->plainTextToken,
