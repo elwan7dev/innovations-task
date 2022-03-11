@@ -19,6 +19,7 @@ class ProductResource extends JsonResource
             'active' => (bool)$this->active,
             'price' => $this->price,
             'description' => $this->description,
+            'media' => $this->getMedia('images'),
             'category' => $this->category->name,
         ];
     }

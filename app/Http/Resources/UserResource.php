@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             'phone' => $this->phone ?? null,
             'address' => $this->address ?? null,
             'block' => (bool)$this->block,
+            'media' => $this->getMedia(),
             'role' => $this->roles->first() ? $this->roles->first()->name : null
         ];
     }

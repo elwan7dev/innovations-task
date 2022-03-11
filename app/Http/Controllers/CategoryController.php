@@ -43,10 +43,14 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        $category = Category::create([
+         $category = Category::query()->create([
             'name' => $request->name,
             'active' => $request->active,
         ]);
+
+         if ($request->has('image')){
+             $category->addMediaFromRequest('image')->toMediaCollection('images');
+         }
 
         return response()->json([
             'success' => true,

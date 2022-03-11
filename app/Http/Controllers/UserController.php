@@ -48,6 +48,9 @@ class UserController extends Controller
         ]);
 
         $user->assignRole($request->role);
+        if ($request->has('image')){
+            $user->addMediaFromRequest('image')->toMediaCollection('images');
+        }
 
         return response()->json([
             'success' => true,
@@ -90,6 +93,10 @@ class UserController extends Controller
         $user->syncRoles($request->role);
         // sync permissions after update.
         $user->tokens()->delete();
+
+        if ($request->has('image')){
+            $user->addMediaFromRequest('image')->toMediaCollection('images');
+        }
         return response()->json([
             'success' => (bool)$isUpdated,
             'message' => $isUpdated ? 'item updated successfully...!' : 'something wrong..!',

@@ -18,6 +18,7 @@ class CategoryResource extends JsonResource
         $returned = [
             'name' => $this->name,
             'active' => (bool)$this->active,
+            'media' => $this->getMedia('images')
         ];
 
         if ($request->has('productsActive') && in_array($request->productsActive, ['true', 'false'])) {

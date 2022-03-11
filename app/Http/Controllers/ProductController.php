@@ -50,6 +50,10 @@ class ProductController extends Controller
             'category_id' => $request->category,
         ]);
 
+        if ($request->has('images')){
+            $product->addMediaFromRequest('images')->toMediaCollection('images');
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'item saved successfully...!',

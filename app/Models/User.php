@@ -9,11 +9,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements CanResetPassword
+class User extends Authenticatable implements CanResetPassword , HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -53,6 +55,7 @@ class User extends Authenticatable implements CanResetPassword
         'phone' => 'unique:users,phone',
         'email' => 'required|email|unique:users,email',
         'password' => 'required|string|min:6|confirmed',
+        'image' => 'image|max:1024|mimes:jpg,png,jpeg,gif,svg',
         'role' => 'exists:roles,name'
     ];
 
