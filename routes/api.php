@@ -30,6 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
         'products' => ProductController::class,
         'users' => UserController::class,
     ]);
+    Route::post('/products/import', [ProductController::class, 'import']);
+
     Route::post('users/block/{user}',[UserController::class,'block']);
     Route::post('users/unBlock/{user}',[UserController::class,'unBlock']);
     Route::get('/profile', function (){

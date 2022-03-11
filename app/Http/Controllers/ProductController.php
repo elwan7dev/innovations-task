@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreproductRequest;
 use App\Http\Requests\UpdateproductRequest;
 use App\Http\Resources\ProductResource;
+use App\Imports\ProductsImport;
 use App\Models\Product;
 use App\services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -108,6 +110,23 @@ class ProductController extends Controller
             'success' => (bool) $deleted,
             'message' => $deleted ? 'item deleted successfully...!' : 'something wrong..!',
         ], $deleted ? 200 : 404);
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'products' => 'file|required|mimes:xlsx,xls,csv'
+        ]);
+        if ($request->file('products')){
+            (new ProductsImport)->queue($request->file('products'));
+//            Excel::import(new ProductsImport, $request->file('products'));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'file uploaded successfully',
+            ]);
+        }
+
     }
 
 }
