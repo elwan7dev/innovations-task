@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('abilities:add-employee')->only(['store', 'update','index']);
+        $this->middleware('abilities:delete-employee')->only('destroy');
+        $this->middleware('abilities:disable-user')->only(['block','unBlock']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -37,7 +44,7 @@ class UserController extends Controller
             'email' => $request->email ?? null,
             'phone' => $request->phone ?? null,
             'address' => $request->address ?? null,
-            'password' => Hash::make($request->password)
+            'password' => bcrypt($request->password)
         ]);
 
         $user->assignRole($request->role);
@@ -78,9 +85,11 @@ class UserController extends Controller
             'email' => $request->email ?? null,
             'phone' => $request->phone ?? null,
             'address' => $request->address ?? null,
-            'password' => $request->password
+            'password' => bcrypt($request->password)
         ]);
         $user->syncRoles($request->role);
+        // sync permissions after update.
+        $user->tokens()->delete();
         return response()->json([
             'success' => (bool)$isUpdated,
             'message' => $isUpdated ? 'item updated successfully...!' : 'something wrong..!',
@@ -101,5 +110,36 @@ class UserController extends Controller
             'success' => (bool) $deleted,
             'message' => $deleted ? 'item deleted successfully...!' : 'something wrong..!',
         ], $deleted ? 200 : 404);
+    }
+
+    public function block(User $user)
+    {
+        $isBlocked = $user->update([
+            'block' => 1,
+        ]);
+        return response()->json([
+            'success' => (bool)$isBlocked,
+            'message' => $isBlocked ? 'user blocked successfully...!' : 'something wrong..!',
+            'data' => new UserResource($user)
+        ], $isBlocked ? 200 : 400);
+    }
+    public function unBlock(User $user)
+    {
+        if ($user->block != 1){
+            return response()->json([
+                'success' => false,
+                'message' => 'user already not blocked',
+                'data' => new UserResource($user)
+            ], 400);
+        }
+
+        $isBlocked = $user->update([
+            'block' => 0,
+        ]);
+        return response()->json([
+            'success' => (bool)$isBlocked,
+            'message' => $isBlocked ? 'user un-blocked successfully...!' : 'something wrong..!',
+            'data' => new UserResource($user)
+        ], $isBlocked ? 200 : 400);
     }
 }

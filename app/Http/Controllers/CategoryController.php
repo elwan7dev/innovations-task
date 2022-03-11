@@ -21,6 +21,7 @@ class CategoryController extends Controller
     public function __construct(CategoryService $service)
     {
         $this->service = $service;
+        $this->middleware('abilities:force-list-categories');
     }
 
     /**

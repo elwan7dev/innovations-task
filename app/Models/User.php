@@ -24,6 +24,7 @@ class User extends Authenticatable
         'phone',
         'address',
         'password',
+        'block',
     ];
 
     /**
@@ -49,7 +50,13 @@ class User extends Authenticatable
         'name' => 'required',
         'phone' => 'unique:users,phone',
         'email' => 'required|email|unique:users,email',
+        'password' => 'required|string|min:6|confirmed',
         'role' => 'exists:roles,name'
     ];
+
+    public function getIsBlockedAttribute(): bool
+    {
+        return (bool)$this->block;
+    }
 
 }

@@ -17,7 +17,7 @@ class CategoryResource extends JsonResource
     {
         $returned = [
             'name' => $this->name,
-            'active' => $this->active,
+            'active' => (bool)$this->active,
         ];
 
         if ($request->has('productsActive') && in_array($request->productsActive, ['true', 'false'])) {

@@ -17,6 +17,8 @@ class ProductController extends Controller
     public function __construct(ProductService $service)
     {
         $this->service = $service;
+        $this->middleware('abilities:force-list-products')->except('index');
+        $this->middleware('ability:force-list-products,show-products-in-cart')->only('index');
     }
 
     /**

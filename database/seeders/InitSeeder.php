@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,20 +22,20 @@ class InitSeeder extends Seeder
         DB::table('roles')->insert([
             [
                 'name' => 'admin',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
 
             ],
             [
                 'name' => 'client',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ],
             [
                 'name' => 'employee',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ]
@@ -43,73 +44,73 @@ class InitSeeder extends Seeder
         DB::table('permissions')->insert([
            [
                'name' => 'add-employee',
-               'guard_name' => 'api',
+               'guard_name' => 'web',
                'created_at' => Carbon::now()->toDateTimeString(),
                'updated_at' => Carbon::now()->toDateTimeString(),
            ],
             [
                 'name' => 'delete-employee',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ],
             [
                 'name' => 'add-client',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ],
             [
                 'name' => 'delete-client',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ],
             [
                 'name' => 'disable-user',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ],
             [
                 'name' => 'force-list-categories',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ],
             [
                 'name' => 'force-list-products',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ],
             [
                 'name' => 'add-edit-employee',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ],
             [
                 'name' => 'buy-products',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ],
             [
                 'name' => 'show-products-in-cart',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ],
             [
                 'name' => 'edit-products-in-cart',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ],
             [
                 'name' => 'remove-products-from-cart',
-                'guard_name' => 'api',
+                'guard_name' => 'web',
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),
             ]
@@ -127,5 +128,12 @@ class InitSeeder extends Seeder
             ->whereIn('name', ['buy-products', 'show-products-in-cart', 'edit-products-in-cart', 'remove-products-from-cart'])
             ->get(['id'])->pluck('id')->toArray();
         Role::query()->where('name','client')->first()->syncPermissions($clientsPermissions);
+
+        $admin = User::create([
+            'name' => 'sys-admin',
+            'email' => 'sys-admin@test.com',
+            'password' => bcrypt('sys-admin@test.com'),
+        ]);
+        $admin->assignRole('admin');
     }
 }
