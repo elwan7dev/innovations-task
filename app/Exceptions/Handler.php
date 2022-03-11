@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
@@ -36,11 +37,15 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->renderable(function (NotFoundHttpException $e) {
-            return response()->json(['message' => 'OOPS ... item not found..!'], 404);
+        $this->renderable(function (NotFoundHttpException $e,Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json(['message' => 'OOPS ... item not found..!'], $e->getStatusCode());
+            }
         });
-        $this->renderable(function (AccessDeniedHttpException $e) {
-            return response()->json(['message' => 'unauthenticated'], 403);
+        $this->renderable(function (AccessDeniedHttpException $e, Request$request) {
+            if ($request->is('api/*')) {
+                return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
+            }
         });
     }
 }

@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('abilities:add-employee')->only(['store', 'update','index']);
+        $this->middleware('abilities:add-employee')->only(['store', 'update','index','show']);
         $this->middleware('abilities:delete-employee')->only('destroy');
         $this->middleware('abilities:disable-user')->only(['block','unBlock']);
     }
