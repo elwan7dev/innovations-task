@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use App\Mail\UserWelcome;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -30,6 +32,10 @@ class AuthController extends Controller
 
         $abilities = auth()->user()->roles->first()->name == 'admin' ?
             ['*'] : auth()->user()->getPermissionsViaRoles()->pluck('name')->toArray();
+
+        // send welcome mail.
+        Mail::to(auth()->user())->send(new UserWelcome(auth()->user()));
+
         return response()->json([
             'token' => auth()->user()->createToken('API Token', $abilities)->plainTextToken,
             'token_type' => 'Bearer',
