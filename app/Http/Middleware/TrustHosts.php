@@ -14,6 +14,7 @@ class TrustHosts extends Middleware
     public function hosts()
     {
         return [
+            'innovations-task.test',
             $this->allSubdomainsOfApplicationUrl(),
         ];
     }

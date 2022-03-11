@@ -7,6 +7,7 @@ use App\Mail\UserWelcome;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -52,4 +53,7 @@ class AuthController extends Controller
             'message' => 'Tokens Revoked'
         ];
     }
+
+
+
 }

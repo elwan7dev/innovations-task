@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\NewPasswordController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -18,6 +19,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [NewPasswordController::class, 'forgotPassword'])
+    ->middleware('guest')->name('password.email');
+
+Route::post('/reset-password', [NewPasswordController::class, 'resetPassword'])
+    ->middleware('guest')->name('password.update');
 
 Route::middleware('auth:sanctum')->get('/profile', function (Request $request) {
     return $request->user();
